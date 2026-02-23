@@ -8,6 +8,8 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600&display=swap" rel="stylesheet">
+    <link rel="manifest" href="manifest.json">
+    <meta name="theme-color" content="#2196f3">
     <!-- Intento de carga de base de datos automatizada -->
     <script src="estudiantes.js"></script>
     <style>
@@ -462,6 +464,13 @@
 
         searchInput.addEventListener('input', handleSearchFilter);
         filterLevel.addEventListener('change', handleSearchFilter);
+
+        if ("serviceWorker" in navigator) {
+            navigator.serviceWorker.register("sw.js")
+            .then(reg => console.log("Service Worker registrado:", reg))
+            .catch(err => console.error("Error al registrar SW:", err));
+        }
+
     </script>
 
 </body>
