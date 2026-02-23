@@ -1,0 +1,469 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Matrícula 2026 - LEBB</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600&display=swap" rel="stylesheet">
+    <!-- Intento de carga de base de datos automatizada -->
+    <script src="estudiantes.js"></script>
+    <style>
+        :root {
+            --primary: #2563eb;
+            --primary-hover: #1d4ed8;
+            --bg: #f8fafc;
+            --card-bg: rgba(255, 255, 255, 0.8);
+            --text-main: #1e293b;
+            --text-muted: #64748b;
+            --shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+            --glass-border: rgba(255, 255, 255, 0.3);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Outfit', sans-serif;
+        }
+
+        body {
+            background: linear-gradient(135deg, #e2e8f0 0%, #f1f5f9 100%);
+            color: var(--text-main);
+            min-height: 100vh;
+            padding: 2rem;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 3rem;
+            animation: fadeInDown 0.8s ease-out;
+        }
+
+        h1 {
+            font-size: 2.5rem;
+            font-weight: 600;
+            background: linear-gradient(to right, var(--primary), #3b82f6);
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 0.5rem;
+        }
+
+        .subtitle {
+            color: var(--text-muted);
+            font-size: 1.1rem;
+        }
+
+        /* Controls */
+        .controls {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 2rem;
+            flex-wrap: wrap;
+            justify-content: center;
+            animation: fadeIn 1s ease-out;
+            background: var(--card-bg);
+            padding: 1.5rem;
+            border-radius: 24px;
+            backdrop-filter: blur(10px);
+            border: 1px solid var(--glass-border);
+            box-shadow: var(--shadow);
+        }
+
+        .search-box {
+            flex: 2;
+            min-width: 300px;
+        }
+
+        input,
+        select {
+            width: 100%;
+            padding: 0.8rem 1.2rem;
+            border-radius: 12px;
+            border: 1px solid #e2e8f0;
+            background: white;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+        }
+
+        input:focus,
+        select:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 4px rgba(37, 99, 235, 0.1);
+        }
+
+        .btn {
+            padding: 0.8rem 1.5rem;
+            border-radius: 12px;
+            border: none;
+            background: var(--primary);
+            color: white;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            white-space: nowrap;
+        }
+
+        .btn:hover {
+            background: var(--primary-hover);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(37, 99, 235, 0.2);
+        }
+
+        /* Grid */
+        .student-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 2rem;
+            animation: fadeInUp 1s ease-out;
+        }
+
+        .student-card {
+            background: var(--card-bg);
+            backdrop-filter: blur(12px);
+            border: 1px solid var(--glass-border);
+            border-radius: 24px;
+            padding: 1.5rem;
+            text-align: center;
+            box-shadow: var(--shadow);
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+
+        .student-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1);
+        }
+
+        .photo-container {
+            width: 140px;
+            height: 140px;
+            margin: 0 auto 1.2rem;
+            border-radius: 20px;
+            overflow: hidden;
+            border: 4px solid white;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            background: #f1f5f9;
+        }
+
+        .photo-container img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .level-badge {
+            display: inline-block;
+            padding: 0.3rem 1rem;
+            border-radius: 12px;
+            background: #eff6ff;
+            color: var(--primary);
+            font-size: 0.85rem;
+            font-weight: 600;
+            margin-bottom: 0.8rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .student-id {
+            color: var(--text-muted);
+            font-size: 0.95rem;
+            margin-bottom: 0.3rem;
+            font-weight: 300;
+        }
+
+        .student-name {
+            font-size: 1.3rem;
+            font-weight: 600;
+            color: var(--text-main);
+            line-height: 1.2;
+        }
+
+        /* Empty State */
+        .empty-state {
+            grid-column: 1 / -1;
+            text-align: center;
+            padding: 5rem 2rem;
+            background: var(--card-bg);
+            border-radius: 32px;
+            border: 2px dashed #cbd5e1;
+            color: var(--text-muted);
+        }
+
+        .empty-state svg {
+            margin-bottom: 1.5rem;
+            opacity: 0.5;
+        }
+
+        /* Animations */
+        @keyframes fadeInDown {
+            from {
+                opacity: 0;
+                transform: translateY(-20px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+            }
+
+            to {
+                opacity: 1;
+            }
+        }
+
+        #loadingOverlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(255, 255, 255, 0.8);
+            backdrop-filter: blur(5px);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 2000;
+            flex-direction: column;
+            gap: 1rem;
+        }
+
+        .spinner {
+            width: 40px;
+            height: 40px;
+            border: 4px solid #e2e8f0;
+            border-top: 4px solid var(--primary);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            0% {
+                transform: rotate(0deg);
+            }
+
+            100% {
+                transform: rotate(360deg);
+            }
+        }
+
+        .admin-badge {
+            position: fixed;
+            bottom: 1rem;
+            right: 1rem;
+            background: #1e293b;
+            color: white;
+            padding: 0.5rem 1rem;
+            border-radius: 30px;
+            font-size: 0.8rem;
+            display: none;
+            cursor: pointer;
+        }
+    </style>
+</head>
+
+<body>
+
+    <div id="loadingOverlay">
+        <div class="spinner"></div>
+        <p>Cargando información estudiantil...</p>
+    </div>
+
+    <div class="container">
+        <header>
+            <h1>Matrícula LEBB</h1>
+            <p class="subtitle">Estudiantes por Niveles</p>
+        </header>
+
+        <div class="controls">
+            <button id="folderBtn" class="btn" onclick="document.getElementById('directoryInput').click()">
+                <svg width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                    <path d="M3 7v10a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-6l-2-2H5a2 2 0 00-2 2z"></path>
+                </svg>
+                Seleccionar Carpeta
+            </button>
+            <input type="file" id="directoryInput" webkitdirectory directory multiple style="display: none;">
+
+            <div class="search-box">
+                <input type="text" id="searchInput" placeholder="Buscar por nombre o cédula...">
+            </div>
+
+            <div style="width: 180px;">
+                <select id="filterLevel">
+                    <option value="">Todos los niveles</option>
+                    <option value="Sétimo">Sétimo</option>
+                    <option value="Octavo">Octavo</option>
+                    <option value="Noveno">Noveno</option>
+                    <option value="Décimo">Décimo</option>
+                    <option value="Undécimo">Undécimo</option>
+                </select>
+            </div>
+        </div>
+
+        <div id="studentGrid" class="student-grid">
+            <div class="empty-state">
+                <svg width="64" height="64" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24">
+                    <path d="M12 4v16m8-8H4"></path>
+                </svg>
+                <h2>Esperando datos...</h2>
+                <p>Si la administración ya generó la lista, aparecerá automáticamente.</p>
+            </div>
+        </div>
+    </div>
+
+    <div id="adminBadge" class="admin-badge" onclick="toggleManualMode()">
+        Modo Administración: Manual
+    </div>
+
+    <script>
+        let students = [];
+        const studentGrid = document.getElementById('studentGrid');
+        const directoryInput = document.getElementById('directoryInput');
+        const searchInput = document.getElementById('searchInput');
+        const filterLevel = document.getElementById('filterLevel');
+        const loadingOverlay = document.getElementById('loadingOverlay');
+        const folderBtn = document.getElementById('folderBtn');
+        const adminBadge = document.getElementById('adminBadge');
+
+        // Inicialización automática
+        window.addEventListener('load', () => {
+            if (typeof ESTUDIANTES_DB !== 'undefined') {
+                console.log('Base de datos cargada automáticamente');
+                students = ESTUDIANTES_DB;
+                folderBtn.style.display = 'none';
+                adminBadge.style.display = 'block';
+                handleSearchFilter();
+            } else {
+                console.log('Esperando carga manual');
+            }
+        });
+
+        function toggleManualMode() {
+            folderBtn.style.display = folderBtn.style.display === 'none' ? 'flex' : 'none';
+        }
+
+        directoryInput.addEventListener('change', async (e) => {
+            const files = Array.from(e.target.files);
+            if (files.length === 0) return;
+
+            loadingOverlay.style.display = 'flex';
+            students = [];
+
+            await new Promise(r => setTimeout(r, 100));
+
+            files.forEach(file => {
+                if (!file.type.startsWith('image/')) return;
+
+                const pathParts = file.webkitRelativePath.split('/');
+                if (pathParts.length < 2) return;
+
+                const nivel = pathParts.length > 2 ? pathParts[pathParts.length - 2] : 'General';
+                const fileName = pathParts[pathParts.length - 1];
+
+                const nameWithoutExt = fileName.substring(0, fileName.lastIndexOf('.'));
+
+                // Nuevo Parser: Dividir por el PRIMER guion "-"
+                let cedula = 'Sin Cédula';
+                let nombreCompleto = nameWithoutExt;
+
+                if (nameWithoutExt.includes('-')) {
+                    const indexFirstHyphen = nameWithoutExt.indexOf('-');
+                    cedula = nameWithoutExt.substring(0, indexFirstHyphen).trim();
+                    nombreCompleto = nameWithoutExt.substring(indexFirstHyphen + 1).trim();
+                }
+
+                students.push({
+                    cedula,
+                    nombre: nombreCompleto,
+                    nivel,
+                    photoUrl: URL.createObjectURL(file)
+                });
+            });
+
+            handleSearchFilter();
+            loadingOverlay.style.display = 'none';
+        });
+
+        function renderStudents(data) {
+            studentGrid.innerHTML = '';
+
+            if (data.length === 0) {
+                studentGrid.innerHTML = `
+                <div class="empty-state">
+                    <h2>Sin resultados</h2>
+                    <p>No se encontraron estudiantes para mostrar.</p>
+                </div>
+            `;
+                return;
+            }
+
+            data.forEach(student => {
+                const card = document.createElement('div');
+                card.className = 'student-card';
+
+                // Para la DB automática, usamos la ruta relativa fotos/Nivel/Archivo
+                // Para la carga manual, ya tenemos el objectURL
+                const source = student.path ? student.path : student.photoUrl;
+
+                card.innerHTML = `
+                <div class="photo-container">
+                    <img src="${source}" alt="${student.nombre}" loading="lazy">
+                </div>
+                <div class="level-badge">${student.nivel}</div>
+                <div class="student-id">${student.cedula}</div>
+                <div class="student-name">${student.nombre}</div>
+            `;
+                studentGrid.appendChild(card);
+            });
+        }
+
+        function handleSearchFilter() {
+            const searchTerm = searchInput.value.toLowerCase().trim();
+            const levelTerm = filterLevel.value.toLowerCase();
+
+            const filtered = students.filter(student => {
+                const matchesSearch = student.nombre.toLowerCase().includes(searchTerm) ||
+                    student.cedula.toLowerCase().includes(searchTerm);
+                const matchesLevel = levelTerm === '' || student.nivel.toLowerCase().includes(levelTerm);
+                return matchesSearch && matchesLevel;
+            });
+
+            renderStudents(filtered);
+        }
+
+        searchInput.addEventListener('input', handleSearchFilter);
+        filterLevel.addEventListener('change', handleSearchFilter);
+    </script>
+
+</body>
+
+</html>
